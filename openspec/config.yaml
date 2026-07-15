@@ -1,0 +1,185 @@
+schema: spec-driven
+
+context: |
+  Project: Eventora
+
+  Product:
+    Eventora is a web platform for discovering, publishing, booking,
+    and managing events and electronic tickets.
+
+  Repository architecture:
+    - Monorepo
+    - apps/api: Laravel REST API
+    - apps/web: React and TypeScript web application
+    - openspec: source of truth for specifications and proposed changes
+    - docs: stable architecture and technical documentation
+
+  Backend stack:
+    - PHP 8.4
+    - Laravel
+    - Laravel Sanctum with Bearer-token authentication
+    - MySQL
+    - Pest for automated testing
+    - Laravel queues, jobs, events, listeners, notifications, policies,
+      API resources, form requests, caching, pagination, and rate limiting
+
+  Frontend stack:
+    - React
+    - TypeScript
+    - Vite
+    - React Router
+    - Axios
+    - TanStack Query
+    - React Hook Form
+    - Zod
+    - Tailwind CSS
+    - Vitest and React Testing Library
+
+  User roles:
+    - User: discovers events, makes bookings, owns tickets, and submits reviews
+    - Organizer: creates and manages their own events and ticket types
+    - Admin: reviews events and administers the platform
+
+  Core domains:
+    - Authentication and authorization
+    - Categories
+    - Events
+    - Event review and publishing
+    - Ticket types
+    - Bookings
+    - Booking items
+    - Payments
+    - Tickets and QR-code check-in
+    - Favorites
+    - Reviews
+    - Notifications
+    - AI-assisted event content and event discovery
+
+  Planned core database tables:
+    - users
+    - categories
+    - events
+    - ticket_types
+    - bookings
+    - booking_items
+    - tickets
+    - payments
+    - favorites
+    - reviews
+    - notifications
+
+  Architecture conventions:
+    - The Laravel application is a headless REST API.
+    - The React application communicates only through documented API contracts.
+    - Use RESTful resource routes.
+    - Prefix API routes with /api/v1.
+    - Keep controllers thin.
+    - Put business workflows in Actions or Services when appropriate.
+    - Use Form Requests for validation.
+    - Use Policies for resource authorization.
+    - Use API Resources for successful API responses.
+    - Use PHP backed enums for finite business states.
+    - Use database transactions for multi-table business operations.
+    - Use lockForUpdate when inventory concurrency could cause overbooking.
+    - Prices and totals must always be calculated and validated by the backend.
+    - Never trust ownership, prices, roles, statuses, or totals sent by the client.
+    - Preserve historical prices in booking_items.
+    - Generate one ticket record for every individual admission.
+    - Avoid adding abstractions before a real use case requires them.
+
+  API conventions:
+    - Use JSON for API requests and responses.
+    - Use consistent response and error structures.
+    - Use correct HTTP status codes.
+    - Use pagination for collection endpoints.
+    - Use filters through query parameters.
+    - Use ISO 8601 datetime values.
+    - Store timestamps in UTC and convert them for display in the frontend.
+    - Never expose stack traces, secrets, internal paths, or sensitive fields.
+    - Document validation errors, authorization errors, and domain conflicts.
+
+  Authentication conventions:
+    - Use Laravel Sanctum Bearer tokens unless a later approved specification changes it.
+    - Protect private routes with auth:sanctum.
+    - Enforce permissions through Policies and middleware.
+    - Do not rely on frontend role checks for security.
+
+  Frontend conventions:
+    - Organize code by feature.
+    - Keep HTTP calls in the API layer, not directly inside UI components.
+    - Use TanStack Query for server state.
+    - Use React Hook Form and Zod for forms.
+    - Keep API DTOs separate from UI-specific models where transformation is needed.
+    - Handle loading, empty, success, validation, unauthorized, forbidden,
+      conflict, and server-error states.
+    - Build responsive and accessible interfaces.
+
+  Testing conventions:
+    - Every backend capability requires Pest feature tests.
+    - Test successful operations, validation failures, unauthorized requests,
+      forbidden requests, missing resources, and business conflicts.
+    - Test Policies explicitly.
+    - Test booking inventory and overbooking prevention.
+    - Prefer factories over manually creating repeated test data.
+    - Frontend behavior should be tested with Vitest and React Testing Library.
+    - Test behavior visible to the user rather than implementation details.
+
+  Spec-driven workflow:
+    - Do not implement a feature before its proposal, specifications,
+      design when necessary, and task list are complete.
+    - Specifications describe required behavior and remain the source of truth.
+    - Each change must be focused and independently verifiable.
+    - Do not silently add features outside the approved scope.
+    - Record important architectural decisions in docs/decisions.
+    - Archive completed changes only after implementation and verification pass.
+
+rules:
+  proposal:
+    - Clearly explain the problem and why the change is needed.
+    - Define the intended users and business value.
+    - State what is included and explicitly excluded.
+    - Identify affected domains, applications, database tables, APIs, and documentation.
+    - Avoid implementation details unless they are necessary to clarify scope.
+    - Identify dependencies on previous or future changes.
+    - Keep the proposal focused enough to implement and verify independently.
+    - Do not include unrelated refactoring.
+
+  specs:
+    - Write requirements using MUST or SHALL for mandatory behavior.
+    - Give every requirement a clear, descriptive title.
+    - Include at least one scenario for every requirement.
+    - Express scenarios with GIVEN, WHEN, and THEN.
+    - Cover success, validation, authorization, and relevant failure scenarios.
+    - Distinguish User, Organizer, and Admin behavior explicitly.
+    - Define ownership and visibility rules.
+    - Define relevant business-state transitions.
+    - Specify concurrency behavior when ticket inventory is modified.
+    - Specify expected HTTP statuses for API behavior.
+    - Avoid prescribing internal implementation unless it is a required constraint.
+    - Reuse established Eventora terminology consistently.
+
+  design:
+    - Explain the chosen technical approach and important alternatives considered.
+    - Identify affected backend and frontend components.
+    - Describe database changes, relationships, indexes, constraints, and deletion behavior.
+    - Describe endpoint contracts and authorization boundaries.
+    - Describe transaction boundaries and concurrency protection where applicable.
+    - Describe API error handling.
+    - Describe frontend server-state and form-state handling when applicable.
+    - Identify security, privacy, performance, and data-integrity risks.
+    - Include migration, rollback, and compatibility considerations.
+    - Keep controllers thin and prevent duplicated business logic.
+    - Do not introduce a new dependency without explaining why it is necessary.
+
+  tasks:
+    - Write tasks as small, ordered, checkable implementation steps.
+    - Separate backend, frontend, tests, documentation, and verification tasks.
+    - Include migrations, models, relationships, enums, requests, policies,
+      resources, business actions, controllers, routes, and tests when applicable.
+    - Add backend contract work before dependent frontend work.
+    - Include security and authorization tasks explicitly.
+    - Include database indexes and constraints explicitly.
+    - Include automated tests with the feature they verify.
+    - Include commands for linting, type checking, testing, and building.
+    - Do not mark a task complete unless its code and tests are complete.
+    - End with a verification section covering all acceptance scenarios.

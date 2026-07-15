@@ -1,0 +1,18 @@
+name: Web CI
+
+on:
+  push:
+    paths:
+      - 'apps/web/**'
+  pull_request:
+    paths:
+      - 'apps/web/**'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
