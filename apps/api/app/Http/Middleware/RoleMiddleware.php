@@ -15,12 +15,11 @@ class RoleMiddleware
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        $userRole = $request->user()->role;
-
         if (empty($roles)) {
-            return $next($request);
+            abort(500, 'Role middleware requires at least one role.');
         }
 
+        $userRole = $request->user()->role;
         $permittedRoles = array_map(fn (string $role) => UserRole::from($role), $roles);
 
         if (! in_array($userRole, $permittedRoles)) {

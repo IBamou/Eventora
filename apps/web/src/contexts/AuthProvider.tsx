@@ -6,7 +6,7 @@ import { AuthContext, type AuthContextValue } from './AuthContext';
 
 function useAuthState(): AuthContextValue {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => !!tokenStorage.get());
 
   const isAuthenticated = user !== null;
 

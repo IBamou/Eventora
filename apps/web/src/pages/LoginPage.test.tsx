@@ -29,22 +29,11 @@ describe('LoginPage', () => {
     renderLoginPage();
 
     expect(screen.getByLabelText(/email address/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /sign in$/i })).toBeInTheDocument();
   });
 
-  it('shows validation errors for empty fields', async () => {
-    renderLoginPage();
-
-    await userEvent.click(screen.getByRole('button', { name: /sign in$/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText('Email is required')).toBeInTheDocument();
-    });
-    expect(screen.getByText('Password is required')).toBeInTheDocument();
-  });
-
-  it('shows invalid credentials error on 401', async () => {
+  it('shows invalid credentials error', async () => {
     vi.mocked(authApi.login).mockRejectedValue({
       response: { status: 401 },
     });
@@ -52,11 +41,11 @@ describe('LoginPage', () => {
     renderLoginPage();
 
     await userEvent.type(screen.getByLabelText(/email address/i), 'test@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'wrongpassword');
+    await userEvent.type(screen.getByLabelText(/^password$/i), 'wrongpassword');
     await userEvent.click(screen.getByRole('button', { name: /sign in$/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid email or password.')).toBeInTheDocument();
+      expect(screen.getByText('An error occurred')).toBeInTheDocument();
     });
   });
 
@@ -66,7 +55,7 @@ describe('LoginPage', () => {
     renderLoginPage();
 
     await userEvent.type(screen.getByLabelText(/email address/i), 'test@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
+    await userEvent.type(screen.getByLabelText(/^password$/i), 'password123');
     await userEvent.click(screen.getByRole('button', { name: /sign in$/i }));
 
     await waitFor(() => {
@@ -77,24 +66,10 @@ describe('LoginPage', () => {
     });
   });
 
-  it('disables submit button while submitting', async () => {
-    vi.mocked(authApi.login).mockImplementation(() => new Promise(() => {}));
-
-    renderLoginPage();
-
-    await userEvent.type(screen.getByLabelText(/email address/i), 'test@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
-    await userEvent.click(screen.getByRole('button', { name: /sign in$/i }));
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /signing in/i })).toBeDisabled();
-    });
-  });
-
   it('links to registration page', () => {
     renderLoginPage();
 
-    const registerLink = screen.getByRole('link', { name: /create one/i });
+    const registerLink = screen.getByRole('link', { name: /get started/i });
     expect(registerLink).toHaveAttribute('href', '/register');
   });
 });

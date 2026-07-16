@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router';
 import { useAuth } from '../contexts/useAuth';
+import { getDashboardUrl } from '../lib/dashboard';
 import Spinner from './Spinner';
 import type { ReactNode } from 'react';
 
@@ -8,7 +9,7 @@ interface GuestRouteProps {
 }
 
 export default function GuestRoute({ children }: GuestRouteProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -19,7 +20,7 @@ export default function GuestRoute({ children }: GuestRouteProps) {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={getDashboardUrl(user?.role || 'user')} replace />;
   }
 
   return <>{children}</>;

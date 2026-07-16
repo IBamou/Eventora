@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
 
 uses(RefreshDatabase::class);
 
@@ -404,13 +403,8 @@ describe('User Resource', function () {
 });
 
 describe('Rate Limiting', function () {
-    beforeEach(function () {
-        RateLimiter::clear('register');
-        RateLimiter::clear('login');
-    });
-
     it('rate limits registration', function () {
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $this->postJson('/api/auth/register', [
                 'name' => "User $i",
                 'email' => "user$i@example.com",
@@ -432,7 +426,7 @@ describe('Rate Limiting', function () {
     });
 
     it('rate limits login', function () {
-        for ($i = 0; $i < 60; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $this->postJson('/api/auth/login', [
                 'email' => 'user@example.com',
                 'password' => 'wrong-password',

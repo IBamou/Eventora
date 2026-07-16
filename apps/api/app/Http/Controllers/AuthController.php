@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $user = User::create([
             'name' => $request->name,
-            'email' => strtolower(trim($request->email)),
+            'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
@@ -33,9 +33,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $email = strtolower(trim($request->email));
-
-        if (! Auth::attempt(['email' => $email, 'password' => $request->password])) {
+        if (! Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -63,5 +61,12 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully.']);
+    }
+
+    public function logoutAll(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+
+        return response()->json(['message' => 'Logged out from all devices.']);
     }
 }

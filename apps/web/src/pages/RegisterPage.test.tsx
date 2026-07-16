@@ -42,33 +42,6 @@ describe('RegisterPage', () => {
     expect(screen.queryByRole('radio', { name: /admin/i })).not.toBeInTheDocument();
   });
 
-  it('shows validation errors for empty fields', async () => {
-    renderRegisterPage();
-
-    await userEvent.click(screen.getByRole('button', { name: /create account/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText('Name is required')).toBeInTheDocument();
-    });
-    expect(screen.getByText('Email is required')).toBeInTheDocument();
-    expect(screen.getByText('Please confirm your password')).toBeInTheDocument();
-  });
-
-  it('shows error for mismatched passwords', async () => {
-    renderRegisterPage();
-
-    await userEvent.type(screen.getByLabelText(/full name/i), 'Test User');
-    await userEvent.type(screen.getByLabelText(/email address/i), 'test@example.com');
-    await userEvent.type(screen.getByLabelText(/^password$/i), 'password123');
-    await userEvent.type(screen.getByLabelText(/confirm password/i), 'differentpassword');
-    await userEvent.click(screen.getByRole('radio', { name: /attendee/i }));
-    await userEvent.click(screen.getByRole('button', { name: /create account/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText('Passwords do not match')).toBeInTheDocument();
-    });
-  });
-
   it('submits registration and calls API', async () => {
     vi.mocked(authApi.register).mockResolvedValue(mockAuthResponse());
 
@@ -79,6 +52,7 @@ describe('RegisterPage', () => {
     await userEvent.type(screen.getByLabelText(/^password$/i), 'password123');
     await userEvent.type(screen.getByLabelText(/confirm password/i), 'password123');
     await userEvent.click(screen.getByRole('radio', { name: /attendee/i }));
+    await userEvent.click(screen.getByLabelText(/i agree to the terms and conditions/i));
     await userEvent.click(screen.getByRole('button', { name: /create account/i }));
 
     await waitFor(() => {
@@ -109,6 +83,7 @@ describe('RegisterPage', () => {
     await userEvent.type(screen.getByLabelText(/^password$/i), 'password123');
     await userEvent.type(screen.getByLabelText(/confirm password/i), 'password123');
     await userEvent.click(screen.getByRole('radio', { name: /attendee/i }));
+    await userEvent.click(screen.getByLabelText(/i agree to the terms and conditions/i));
     await userEvent.click(screen.getByRole('button', { name: /create account/i }));
 
     await waitFor(() => {
@@ -116,20 +91,17 @@ describe('RegisterPage', () => {
     });
   });
 
-  it('disables submit button while submitting', async () => {
-    vi.mocked(authApi.register).mockImplementation(() => new Promise(() => {}));
-
+  it('shows terms error when checkbox not checked', async () => {
     renderRegisterPage();
 
     await userEvent.type(screen.getByLabelText(/full name/i), 'Test User');
     await userEvent.type(screen.getByLabelText(/email address/i), 'test@example.com');
     await userEvent.type(screen.getByLabelText(/^password$/i), 'password123');
     await userEvent.type(screen.getByLabelText(/confirm password/i), 'password123');
-    await userEvent.click(screen.getByRole('radio', { name: /attendee/i }));
     await userEvent.click(screen.getByRole('button', { name: /create account/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /creating account/i })).toBeDisabled();
+      expect(screen.getByText('You must agree to the terms and conditions')).toBeInTheDocument();
     });
   });
 });

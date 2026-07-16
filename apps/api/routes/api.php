@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 RateLimiter::for('register', function (Request $request) {
-    return Limit::perMinute(60)->by($request->ip());
+    return Limit::perMinute(5)->by($request->ip());
 });
 
 RateLimiter::for('login', function (Request $request) {
-    return Limit::perMinute(60)->by($request->ip());
+    return Limit::perMinute(5)->by($request->input('email', '').'|'.$request->ip());
 });
 
 // Public routes
@@ -24,4 +24,5 @@ Route::post('/auth/login', [AuthController::class, 'login'])
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout-all', [AuthController::class, 'logoutAll']);
 });

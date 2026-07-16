@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { AuthProvider } from './contexts/AuthProvider';
+import { useAuth } from './contexts/useAuth';
+import { getDashboardUrl } from './lib/dashboard';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import GuestRoute from './components/GuestRoute';
@@ -9,13 +12,24 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ForbiddenPage from './pages/ForbiddenPage';
 import DashboardPage from './pages/DashboardPage';
-import OrganizerPage from './pages/OrganizerPage';
+import OrganizerDashboardPage from './pages/OrganizerDashboardPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import OrganizerSettingsPage from './pages/OrganizerSettingsPage';
+import AdminUsersPage from './pages/AdminUsersPage';
+import AdminSettingsPage from './pages/AdminSettingsPage';
+
+function RoleRedirect() {
+  const { user } = useAuth();
+
+  return <Navigate to={getDashboardUrl(user?.role || 'user')} replace />;
+}
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
           <Route
             path="/"
             element={
@@ -42,6 +56,14 @@ export default function App() {
           />
           <Route path="/forbidden" element={<ForbiddenPage />} />
           <Route
+            path="/auth/redirect"
+            element={
+              <ProtectedRoute>
+                <RoleRedirect />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
@@ -52,12 +74,60 @@ export default function App() {
             }
           />
           <Route
-            path="/organizer"
+            path="/organizer/dashboard"
             element={
               <ProtectedRoute>
                 <RoleGate roles="organizer">
                   <Layout>
-                    <OrganizerPage />
+                    <OrganizerDashboardPage />
+                  </Layout>
+                </RoleGate>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organizer/settings"
+            element={
+              <ProtectedRoute>
+                <RoleGate roles="organizer">
+                  <Layout>
+                    <OrganizerSettingsPage />
+                  </Layout>
+                </RoleGate>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <RoleGate roles="admin">
+                  <Layout>
+                    <AdminDashboardPage />
+                  </Layout>
+                </RoleGate>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute>
+                <RoleGate roles="admin">
+                  <Layout>
+                    <AdminUsersPage />
+                  </Layout>
+                </RoleGate>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/settings"
+            element={
+              <ProtectedRoute>
+                <RoleGate roles="admin">
+                  <Layout>
+                    <AdminSettingsPage />
                   </Layout>
                 </RoleGate>
               </ProtectedRoute>
@@ -65,7 +135,8 @@ export default function App() {
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
