@@ -20,7 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        env('FRONTEND_URL')
+        rtrim(env('FRONTEND_URL', 'http://localhost:5173'), '/'),
     ],
 
     'allowed_origins_patterns' => [],
@@ -32,7 +32,7 @@ return [
         'Authorization',
         'Content-Type',
         'Origin',
-        'X-Requested-With'
+        'X-Requested-With',
     ],
 
     'max_age' => 0,
