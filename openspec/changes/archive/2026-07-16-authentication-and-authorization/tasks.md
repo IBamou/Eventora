@@ -60,22 +60,22 @@
 - [x] 5.3 Return `401 Unauthorized` when no authenticated user exists
 - [x] 5.4 Return `403 Forbidden` when the authenticated user's role is not permitted
 - [x] 5.5 Register the middleware alias in `bootstrap/app.php`
-- [ ] 5.6 Add dedicated test routes only inside the test environment
-- [ ] 5.7 Verify that no testing-only authorization routes are exposed in production
-- [ ] 5.8 Document that Policies will handle resource ownership in future features
+- [x] 5.6 Add dedicated test routes only inside the test environment
+- [x] 5.7 Verify that no testing-only authorization routes are exposed in production
+- [x] 5.8 Document that Policies will handle resource ownership in future features
 
 ## 6. Backend Security Configuration
 
-- [ ] 6.1 Create a named rate limiter for registration
-- [ ] 6.2 Limit registration attempts by client IP
-- [ ] 6.3 Create a named rate limiter for login
-- [ ] 6.4 Limit login attempts using the normalized email and client IP
-- [ ] 6.5 Apply the rate limiters to their corresponding routes
-- [ ] 6.6 Configure CORS for the React frontend origin
-- [ ] 6.7 Keep `supports_credentials` disabled while using Bearer-token authentication
-- [ ] 6.8 Ensure passwords and tokens are never written to application logs
-- [ ] 6.9 Ensure protected routes do not rely on frontend role checks
-- [ ] 6.10 Ensure authentication exceptions always return JSON for API requests
+- [x] 6.1 Create a named rate limiter for registration
+- [x] 6.2 Limit registration attempts by client IP
+- [x] 6.3 Create a named rate limiter for login
+- [x] 6.4 Limit login attempts using the normalized email and client IP
+- [x] 6.5 Apply the rate limiters to their corresponding routes
+- [x] 6.6 Configure CORS for the React frontend origin
+- [x] 6.7 Keep `supports_credentials` disabled while using Bearer-token authentication
+- [x] 6.8 Ensure passwords and tokens are never written to application logs
+- [x] 6.9 Ensure protected routes do not rely on frontend role checks
+- [x] 6.10 Ensure authentication exceptions always return JSON for API requests
 
 ## 7. Backend Factories and Testing Foundation
 
@@ -83,8 +83,8 @@
 - [x] 7.2 Add a `user` factory state
 - [x] 7.3 Add an `organizer` factory state
 - [x] 7.4 Add an `admin` factory state
-- [ ] 7.5 Create reusable authentication test helpers when they reduce duplication
-- [ ] 7.6 Configure dedicated role-middleware test routes in the testing environment
+- [x] 7.5 Create reusable authentication test helpers when they reduce duplication
+- [x] 7.6 Configure dedicated role-middleware test routes in the testing environment
 
 ## 8. Backend Registration Tests
 
