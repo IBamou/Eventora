@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Testing\TestResponse;
 
 if (! function_exists('createUser')) {
     function createUser(string $role = 'user', array $overrides = []): User
@@ -22,7 +23,7 @@ if (! function_exists('createUserWithToken')) {
 }
 
 if (! function_exists('registerUser')) {
-    function registerUser(array $overrides = []): \Illuminate\Testing\TestResponse
+    function registerUser(array $overrides = []): TestResponse
     {
         return $this->postJson('/api/auth/register', array_merge([
             'name' => 'Test User',
@@ -35,7 +36,7 @@ if (! function_exists('registerUser')) {
 }
 
 if (! function_exists('loginUser')) {
-    function loginUser(User $user): \Illuminate\Testing\TestResponse
+    function loginUser(User $user): TestResponse
     {
         return $this->postJson('/api/auth/login', [
             'email' => $user->email,
